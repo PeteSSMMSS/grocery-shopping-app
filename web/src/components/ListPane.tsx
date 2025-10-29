@@ -43,7 +43,19 @@ export default function ListPane({ list, onUpdateItem, onRemoveItem }: ListPaneP
                     : 'bg-[#282828] hover:bg-neutral-700/30'
                 }`}
               >
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 md:gap-4">
+                  {/* Desktop: Checkbox (optional for visual feedback) */}
+                  <input
+                    type="checkbox"
+                    checked={item.is_checked}
+                    onChange={(e) => {
+                      e.stopPropagation()
+                      onUpdateItem(item.id, { is_checked: e.target.checked })
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="hidden md:block w-5 h-5 text-red-600 bg-neutral-700 border-neutral-600 rounded focus:ring-red-500"
+                  />
+
                   {/* Product name with quantity */}
                   <div className="flex-1 min-w-0">
                     <h3
@@ -58,14 +70,47 @@ export default function ListPane({ list, onUpdateItem, onRemoveItem }: ListPaneP
                     </h3>
                   </div>
 
-                  {/* Delete Button - Only visible when checked */}
+                  {/* Desktop: Quantity Controls */}
+                  <div className="hidden md:flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() =>
+                        item.qty > 1
+                          ? onUpdateItem(item.id, { qty: item.qty - 1 })
+                          : onRemoveItem(item.id)
+                      }
+                      className="w-8 h-8 flex items-center justify-center bg-neutral-700 hover:bg-neutral-600 rounded text-neutral-200 font-bold transition-colors"
+                    >
+                      −
+                    </button>
+                    <span className="w-8 text-center font-medium text-neutral-200">{item.qty}</span>
+                    <button
+                      onClick={() => onUpdateItem(item.id, { qty: item.qty + 1 })}
+                      className="w-8 h-8 flex items-center justify-center bg-neutral-700 hover:bg-neutral-600 rounded text-neutral-200 font-bold transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Desktop: Always visible Delete Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onRemoveItem(item.id)
+                    }}
+                    className="hidden md:block p-2 text-red-400 hover:bg-red-900 hover:bg-opacity-20 rounded transition-colors"
+                    title="Entfernen"
+                  >
+                    🗑️
+                  </button>
+
+                  {/* Mobile: Delete Button only when checked (via swipe) */}
                   {item.is_checked && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
                         onRemoveItem(item.id)
                       }}
-                      className="flex-shrink-0 p-2 text-neutral-600 hover:text-red-400 active:text-red-500 transition-colors"
+                      className="md:hidden flex-shrink-0 p-2 text-neutral-600 hover:text-red-400 active:text-red-500 transition-colors"
                       title="Entfernen"
                     >
                       🗑️

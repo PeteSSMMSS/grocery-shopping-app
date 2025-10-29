@@ -109,21 +109,21 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
                         <button
                           key={product.id}
                           onClick={() => onAddToList(product.id)}
-                          className="w-full p-5 md:p-4 text-left transition active:bg-neutral-700 touch-manipulation border-b border-neutral-700/30"
+                          className="w-full p-5 text-left transition active:bg-neutral-700 touch-manipulation border-b border-neutral-700/30 md:border-b-0 md:p-4 md:bg-[#282828] md:border-2 md:border-neutral-800 md:rounded-xl md:hover:border-red-500 md:hover:bg-[#2a2a2a] md:min-h-[80px] md:flex md:flex-col md:justify-between"
                         >
-                          <div className="flex items-center justify-between gap-4">
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-lg md:text-base text-neutral-100 mb-1">
+                          <div className="flex items-center justify-between gap-4 md:block">
+                            <div className="flex-1 min-w-0 md:flex-none">
+                              <h4 className="font-medium text-lg md:text-base text-neutral-100 mb-1 md:mb-2 md:line-clamp-2">
                                 {product.name}
                               </h4>
-                              <div className="flex items-center gap-2 text-sm text-neutral-400">
+                              <div className="flex items-center gap-2 text-sm text-neutral-400 md:justify-start">
                                 {sizeInfo && (
                                   <>
                                     <span className="text-xs">{sizeInfo}</span>
-                                    <span>•</span>
+                                    <span className="md:inline">•</span>
                                   </>
                                 )}
-                                <span className="font-bold text-base text-red-500">
+                                <span className="font-bold text-base text-red-500 md:font-semibold md:text-neutral-100">
                                   {formatPrice(product.current_price)}
                                 </span>
                               </div>
