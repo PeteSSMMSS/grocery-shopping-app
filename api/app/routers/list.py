@@ -35,17 +35,31 @@ def get_active_list(
     """
     Get the current active shopping list with all items.
     Calculates total price based on current product prices.
+    Items are explicitly sorted by added_at to maintain order.
     """
     active_list = get_or_create_active_list(db)
     
+    # Explicitly load items sorted by added_at to prevent any DB reordering
+    sorted_items = (
+        db.query(models.ListItem)
+        .filter(models.ListItem.list_id == active_list.id)
+        .order_by(models.ListItem.added_at.asc())
+        .all()
+    )
+    
     # Calculate total
     total_cents = 0
-    for item in active_list.items:
+    for item in sorted_items:
         if item.product.current_price:
             total_cents += item.product.current_price * item.qty
     
+    # Build response with explicitly sorted items
     return {
-        **active_list.__dict__,
+        "id": active_list.id,
+        "name": active_list.name,
+        "is_active": active_list.is_active,
+        "created_at": active_list.created_at,
+        "items": sorted_items,
         "total_cents": total_cents
     }
 
