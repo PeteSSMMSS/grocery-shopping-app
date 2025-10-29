@@ -70,13 +70,19 @@ def checkout(
         db.add(db_purchase_item)
     
     # Create shopping event for calendar
-    db_shopping_event = models.ShoppingEvent(
-        name=active_list.name,
-        event_date=datetime.utcnow().date(),
-        total_price_cents=total_cents,
-        items=shopping_event_items
-    )
-    db.add(db_shopping_event)
+    try:
+        db_shopping_event = models.ShoppingEvent(
+            name=active_list.name,
+            event_date=datetime.utcnow().date(),
+            total_price_cents=total_cents,
+            items=shopping_event_items
+        )
+        db.add(db_shopping_event)
+        print(f"✅ ShoppingEvent created: {active_list.name} on {datetime.utcnow().date()} with {len(shopping_event_items)} items")
+    except Exception as e:
+        print(f"❌ ERROR creating ShoppingEvent: {e}")
+        import traceback
+        traceback.print_exc()
     
     # Clear active list
     for item in active_list.items:
