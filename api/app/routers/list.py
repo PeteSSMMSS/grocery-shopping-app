@@ -58,7 +58,7 @@ def get_active_list(
         "id": active_list.id,
         "name": active_list.name,
         "is_active": active_list.is_active,
-        "created_at": active_list.created_at,
+        "updated_at": active_list.updated_at,
         "items": sorted_items,
         "total_cents": total_cents
     }
