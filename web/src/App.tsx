@@ -76,9 +76,9 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-[#1f1f1f]">
       <header className="bg-[#282828] shadow-lg border-b border-neutral-800">
-        <div className="px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-neutral-100">🛒 Einkaufsliste</h1>
+        <div className="px-4 py-3 md:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 md:gap-3">
+            <h1 className="text-xl md:text-2xl font-bold text-neutral-100">🛒 Einkaufsliste</h1>
             {!online && (
               <span className="px-2 py-1 text-xs font-medium bg-amber-600 text-amber-100 rounded">
                 Offline
@@ -86,31 +86,53 @@ function App() {
             )}
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => checkoutMutation.mutate()}
-              disabled={!activeList?.items.length || checkoutMutation.isPending}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
-            >
-              {checkoutMutation.isPending ? 'Erledigt...' : 'Erledigt'}
-            </button>
-            <button
-              onClick={() => setIsCalendarOpen(true)}
-              className="px-4 py-2 bg-neutral-700 text-neutral-200 rounded-lg hover:bg-neutral-600 font-medium transition-colors"
-            >
-              Kalender
-            </button>
-            <button
-              onClick={() => setIsMealsOpen(true)}
-              className="px-4 py-2 bg-neutral-700 text-neutral-200 rounded-lg hover:bg-neutral-600 font-medium transition-colors"
-            >
-              Mahlzeiten
-            </button>
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="px-4 py-2 bg-neutral-700 text-neutral-200 rounded-lg hover:bg-neutral-600 font-medium transition-colors"
-            >
-              Einstellungen
-            </button>
+            {/* Desktop: Full buttons */}
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                onClick={() => checkoutMutation.mutate()}
+                disabled={!activeList?.items.length || checkoutMutation.isPending}
+                className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+              >
+                {checkoutMutation.isPending ? 'Erledigt...' : '✓ Erledigt'}
+              </button>
+              <button
+                onClick={() => setIsCalendarOpen(true)}
+                className="px-4 py-2 bg-neutral-700 text-neutral-200 rounded-lg hover:bg-neutral-600 font-medium transition-colors"
+              >
+                📅 Kalender
+              </button>
+              <button
+                onClick={() => setIsMealsOpen(true)}
+                className="px-4 py-2 bg-neutral-700 text-neutral-200 rounded-lg hover:bg-neutral-600 font-medium transition-colors"
+              >
+                🍳 Mahlzeiten
+              </button>
+              <button
+                onClick={() => setIsSettingsOpen(true)}
+                className="px-4 py-2 bg-neutral-700 text-neutral-200 rounded-lg hover:bg-neutral-600 font-medium transition-colors"
+              >
+                ⚙️ Einstellungen
+              </button>
+            </div>
+
+            {/* Mobile: Icon buttons only */}
+            <div className="flex md:hidden items-center gap-1">
+              <button
+                onClick={() => checkoutMutation.mutate()}
+                disabled={!activeList?.items.length || checkoutMutation.isPending}
+                className="p-2 bg-emerald-600 text-white rounded-lg active:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Einkauf erledigen"
+              >
+                ✓
+              </button>
+              <button
+                onClick={() => setIsSettingsOpen(true)}
+                className="p-2 bg-neutral-700 text-neutral-200 rounded-lg active:bg-neutral-600 transition-colors"
+                title="Einstellungen"
+              >
+                ⚙️
+              </button>
+            </div>
           </div>
         </div>
       </header>
