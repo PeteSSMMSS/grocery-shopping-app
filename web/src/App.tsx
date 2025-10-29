@@ -14,6 +14,7 @@ function App() {
   const [isMealsOpen, setIsMealsOpen] = useState(false)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const [isCatalogOpen, setIsCatalogOpen] = useState(false)
+  const [isCheckoutConfirmOpen, setIsCheckoutConfirmOpen] = useState(false)
   const [online, setOnline] = useState(navigator.onLine)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
@@ -119,11 +120,7 @@ function App() {
             {/* Mobile: Only "Erledigt" button */}
             <div className="flex md:hidden items-center gap-1">
               <button
-                onClick={() => {
-                  if (window.confirm('Möchtest du den Einkauf wirklich als erledigt markieren?')) {
-                    checkoutMutation.mutate()
-                  }
-                }}
+                onClick={() => setIsCheckoutConfirmOpen(true)}
                 disabled={!activeList?.items.length || checkoutMutation.isPending}
                 className="px-4 py-2 bg-emerald-600 text-white rounded-lg active:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                 title="Einkauf erledigen"
@@ -189,6 +186,44 @@ function App() {
                 setToast({ message: '✅ Zur Liste hinzugefügt!', type: 'success' })
               }}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Confirmation Dialog */}
+      {isCheckoutConfirmOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-[60] flex items-center justify-center p-4">
+          <div className="bg-[#282828] rounded-2xl shadow-2xl max-w-sm w-full border border-neutral-700 animate-in fade-in zoom-in duration-200">
+            {/* Header */}
+            <div className="p-6 border-b border-neutral-700">
+              <h3 className="text-xl font-bold text-neutral-100">Einkauf erledigen?</h3>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6">
+              <p className="text-neutral-300 leading-relaxed">
+                Möchtest du den Einkauf wirklich als erledigt markieren? Die Liste wird archiviert und eine neue Liste erstellt.
+              </p>
+            </div>
+            
+            {/* Actions */}
+            <div className="p-6 pt-0 flex gap-3">
+              <button
+                onClick={() => setIsCheckoutConfirmOpen(false)}
+                className="flex-1 px-4 py-3 bg-neutral-700 text-neutral-200 rounded-xl hover:bg-neutral-600 active:bg-neutral-600 font-medium transition-colors"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={() => {
+                  setIsCheckoutConfirmOpen(false)
+                  checkoutMutation.mutate()
+                }}
+                className="flex-1 px-4 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 active:bg-emerald-700 font-medium transition-colors"
+              >
+                Erledigt
+              </button>
+            </div>
           </div>
         </div>
       )}
