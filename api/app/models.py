@@ -75,7 +75,7 @@ class List(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relationships
-    items = relationship("ListItem", back_populates="list", cascade="all, delete-orphan")
+    items = relationship("ListItem", back_populates="list", cascade="all, delete-orphan", order_by="ListItem.added_at")
     purchases = relationship("Purchase", back_populates="list")
 
 
