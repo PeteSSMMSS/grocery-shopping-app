@@ -1,4 +1,4 @@
-# 🚀 Schnellstart-Anleitung - Einkaufslisten App
+# 🚀 Schnellstart-Anleitung - Einkaufslisten App 2025
 
 ## ⚡ Windows: Erste Schritte
 
