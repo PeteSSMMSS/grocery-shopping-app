@@ -74,8 +74,14 @@ class List(Base):
     is_active = Column(Boolean, default=True, index=True)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    # Relationships
-    items = relationship("ListItem", back_populates="list", cascade="all, delete-orphan", order_by="ListItem.added_at")
+    # Relationships - explicitly order items by added_at to maintain shopping order
+    items = relationship(
+        "ListItem", 
+        back_populates="list", 
+        cascade="all, delete-orphan",
+        order_by="ListItem.added_at.asc()",
+        lazy="joined"
+    )
     purchases = relationship("Purchase", back_populates="list")
 
 
