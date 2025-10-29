@@ -64,6 +64,11 @@ function App() {
     mutationFn: () => api.purchase.checkout(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeList'] })
+      queryClient.invalidateQueries({ queryKey: ['purchases'] })
+      setToast({ message: '✅ Einkauf erfolgreich erledigt!', type: 'success' })
+    },
+    onError: () => {
+      setToast({ message: '❌ Fehler beim Erledigen des Einkaufs', type: 'error' })
     },
   })
 
@@ -91,7 +96,7 @@ function App() {
             {/* Desktop: Full buttons */}
             <div className="hidden md:flex items-center gap-2">
               <button
-                onClick={() => checkoutMutation.mutate()}
+                onClick={() => setIsCheckoutConfirmOpen(true)}
                 disabled={!activeList?.items.length || checkoutMutation.isPending}
                 className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
               >
