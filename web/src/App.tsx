@@ -13,6 +13,7 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isMealsOpen, setIsMealsOpen] = useState(false)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false)
   const [online, setOnline] = useState(navigator.onLine)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
@@ -139,7 +140,8 @@ function App() {
 
       <main className="flex-1 overflow-hidden">
         <div className="h-full flex flex-col md:flex-row">
-          <div className="w-full md:w-1/2 border-r border-neutral-800 overflow-auto bg-[#282828]">
+          {/* Mobile: Only List, Catalog as Modal */}
+          <div className="w-full md:w-1/2 md:border-r border-neutral-800 overflow-auto bg-[#282828]">
             <ListPane
               list={activeList}
               onUpdateItem={(id, data) => updateItemMutation.mutate({ id, data })}
@@ -147,7 +149,8 @@ function App() {
             />
           </div>
 
-          <div className="w-full md:w-1/2 overflow-auto bg-[#1f1f1f]">
+          {/* Desktop: Catalog side-by-side */}
+          <div className="hidden md:block w-full md:w-1/2 overflow-auto bg-[#1f1f1f]">
             <CatalogPane
               products={products}
               categories={categories}
@@ -156,6 +159,44 @@ function App() {
           </div>
         </div>
       </main>
+
+      {/* Mobile: Floating Action Button to open Catalog */}
+      <button
+        onClick={() => setIsCatalogOpen(true)}
+        className="md:hidden fixed bottom-6 right-6 w-16 h-16 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-full shadow-2xl flex items-center justify-center z-50 touch-manipulation"
+        aria-label="Produktkatalog öffnen"
+      >
+        <span className="text-3xl leading-none">+</span>
+      </button>
+
+      {/* Mobile: Catalog Modal */}
+      {isCatalogOpen && (
+        <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
+          <div className="bg-[#1f1f1f] w-full h-[85vh] rounded-t-3xl overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="bg-[#282828] p-4 flex items-center justify-between border-b border-neutral-800">
+              <h2 className="text-xl font-bold text-neutral-100">Produkte hinzufügen</h2>
+              <button
+                onClick={() => setIsCatalogOpen(false)}
+                className="p-2 text-neutral-400 hover:text-neutral-100 active:bg-neutral-700 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            {/* Modal Content */}
+            <div className="flex-1 overflow-auto">
+              <CatalogPane
+                products={products}
+                categories={categories}
+                onAddToList={(productId) => {
+                  addItemMutation.mutate({ product_id: productId, qty: 1 })
+                  setToast({ message: '✅ Zur Liste hinzugefügt!', type: 'success' })
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {isMealsOpen && (
         <MealsModal
