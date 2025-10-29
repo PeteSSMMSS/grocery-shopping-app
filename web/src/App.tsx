@@ -116,22 +116,19 @@ function App() {
               </button>
             </div>
 
-            {/* Mobile: Icon buttons only */}
+            {/* Mobile: Only "Erledigt" button */}
             <div className="flex md:hidden items-center gap-1">
               <button
-                onClick={() => checkoutMutation.mutate()}
+                onClick={() => {
+                  if (window.confirm('Möchtest du den Einkauf wirklich als erledigt markieren?')) {
+                    checkoutMutation.mutate()
+                  }
+                }}
                 disabled={!activeList?.items.length || checkoutMutation.isPending}
-                className="p-2 bg-emerald-600 text-white rounded-lg active:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 bg-emerald-600 text-white rounded-lg active:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                 title="Einkauf erledigen"
               >
-                ✓
-              </button>
-              <button
-                onClick={() => setIsSettingsOpen(true)}
-                className="p-2 bg-neutral-700 text-neutral-200 rounded-lg active:bg-neutral-600 transition-colors"
-                title="Einstellungen"
-              >
-                ⚙️
+                {checkoutMutation.isPending ? 'Wird erledigt...' : 'Erledigt'}
               </button>
             </div>
           </div>
