@@ -65,6 +65,7 @@ function App() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeList'] })
       queryClient.invalidateQueries({ queryKey: ['purchases'] })
+      queryClient.invalidateQueries({ queryKey: ['shopping-events'] })
       setToast({ message: '✅ Einkauf erfolgreich erledigt!', type: 'success' })
     },
     onError: () => {
