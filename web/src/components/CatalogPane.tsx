@@ -33,26 +33,26 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
 
   return (
     <div className="flex flex-col h-full bg-[#1f1f1f]">
-      <div className="p-4 bg-[#282828] border-b border-neutral-800 space-y-3">
-        <h2 className="text-lg font-semibold text-neutral-100">Produktkatalog</h2>
+      <div className="p-3 md:p-4 bg-[#282828] border-b border-neutral-800 space-y-3">
+        <h2 className="text-lg md:text-lg font-semibold text-neutral-100">Produktkatalog</h2>
 
-        {/* Search */}
+        {/* Search - Larger on mobile */}
         <input
           type="text"
           placeholder="Produkt suchen..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-2 bg-neutral-800 border border-neutral-700 text-neutral-100 placeholder-neutral-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="w-full px-4 py-3 md:py-2 text-base bg-neutral-800 border border-neutral-700 text-neutral-100 placeholder-neutral-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
         />
 
-        {/* Category Filter */}
+        {/* Category Filter - Larger buttons on mobile */}
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setSelectedCategory(null)}
-            className={`px-3 py-1 rounded-lg text-sm font-medium transition ${
+            className={`px-4 py-2 md:px-3 md:py-1 rounded-lg text-sm font-medium transition touch-manipulation ${
               selectedCategory === null
                 ? 'bg-red-600 text-white'
-                : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                : 'bg-neutral-700 text-neutral-300 active:bg-neutral-600'
             }`}
           >
             Alle
@@ -61,10 +61,10 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition ${
+              className={`px-4 py-2 md:px-3 md:py-1 rounded-lg text-sm font-medium transition touch-manipulation ${
                 selectedCategory === cat.id
                   ? 'bg-red-600 text-white'
-                  : 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
+                  : 'bg-neutral-700 text-neutral-300 active:bg-neutral-600'
               }`}
             >
               {cat.name}
@@ -73,11 +73,12 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
         </div>
       </div>
 
-      {/* Products Grid */}
-      <div className="flex-1 overflow-auto p-4">
+      {/* Products List - Optimized for mobile */}
+      <div className="flex-1 overflow-auto p-3 md:p-4">
         {filteredProducts.length === 0 ? (
-          <div className="text-center text-neutral-400 py-8">
-            <p>Keine Produkte gefunden</p>
+          <div className="text-center text-neutral-400 py-12">
+            <div className="text-5xl mb-3">🔍</div>
+            <p className="text-lg">Keine Produkte gefunden</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -85,10 +86,11 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
               const category = categories.find((c) => c.id === Number(categoryId))
               return (
                 <div key={categoryId}>
-                  <h3 className="text-sm font-semibold text-neutral-500 uppercase mb-3 tracking-wider">
+                  <h3 className="text-xs md:text-sm font-semibold text-neutral-500 uppercase mb-3 tracking-wider px-1">
                     {category?.name || 'Ohne Kategorie'}
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {/* Mobile: Single column list, Desktop: Grid */}
+                  <div className="space-y-2 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-3">
                     {categoryProducts.map((product) => {
                       // Generate meta info based on price type
                       let sizeInfo = ''
@@ -107,19 +109,16 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
                         <button
                           key={product.id}
                           onClick={() => onAddToList(product.id)}
-                          className="p-4 bg-[#282828] border border-neutral-800 rounded-lg hover:border-red-500 hover:bg-[#2a2a2a] transition text-left"
+                          className="w-full p-4 md:p-4 bg-[#282828] border-2 border-neutral-800 rounded-xl active:border-red-500 active:bg-[#2a2a2a] transition text-left touch-manipulation min-h-[80px] flex flex-col justify-between"
                         >
-                          <h4 className="font-medium text-neutral-100 mb-2 truncate">
+                          <h4 className="font-medium text-base md:text-base text-neutral-100 mb-2 line-clamp-2">
                             {product.name}
                           </h4>
-                          <div className="flex items-center gap-2 text-sm text-neutral-400">
+                          <div className="flex items-center justify-between gap-2 text-sm text-neutral-400">
                             {sizeInfo && (
-                              <>
-                                <span>{sizeInfo}</span>
-                                <span>•</span>
-                              </>
+                              <span className="text-xs">{sizeInfo}</span>
                             )}
-                            <span className="font-semibold text-neutral-100">
+                            <span className="font-bold text-base text-red-500 ml-auto">
                               {formatPrice(product.current_price)}
                             </span>
                           </div>
