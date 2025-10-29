@@ -85,12 +85,12 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
             {Object.entries(grouped).map(([categoryId, categoryProducts]) => {
               const category = categories.find((c) => c.id === Number(categoryId))
               return (
-                <div key={categoryId}>
-                  <h3 className="text-xs md:text-sm font-semibold text-neutral-500 uppercase mb-3 tracking-wider px-1">
+                <div key={categoryId} className="mb-6">
+                  <h3 className="text-xs md:text-sm font-semibold text-neutral-500 uppercase mb-2 tracking-wider px-4 md:px-1">
                     {category?.name || 'Ohne Kategorie'}
                   </h3>
-                  {/* Mobile: Single column list, Desktop: Grid */}
-                  <div className="space-y-2 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-3">
+                  {/* Mobile: List like shopping list, Desktop: Grid */}
+                  <div className="divide-y divide-neutral-700/30 md:divide-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-3">
                     {categoryProducts.map((product) => {
                       // Generate meta info based on price type
                       let sizeInfo = ''
@@ -109,18 +109,25 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
                         <button
                           key={product.id}
                           onClick={() => onAddToList(product.id)}
-                          className="w-full p-4 md:p-4 bg-[#282828] border-2 border-neutral-800 rounded-xl active:border-red-500 active:bg-[#2a2a2a] transition text-left touch-manipulation min-h-[80px] flex flex-col justify-between"
+                          className="w-full p-5 md:p-4 text-left transition active:bg-neutral-700 touch-manipulation border-b border-neutral-700/30"
                         >
-                          <h4 className="font-medium text-base md:text-base text-neutral-100 mb-2 line-clamp-2">
-                            {product.name}
-                          </h4>
-                          <div className="flex items-center justify-between gap-2 text-sm text-neutral-400">
-                            {sizeInfo && (
-                              <span className="text-xs">{sizeInfo}</span>
-                            )}
-                            <span className="font-bold text-base text-red-500 ml-auto">
-                              {formatPrice(product.current_price)}
-                            </span>
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium text-lg md:text-base text-neutral-100 mb-1">
+                                {product.name}
+                              </h4>
+                              <div className="flex items-center gap-2 text-sm text-neutral-400">
+                                {sizeInfo && (
+                                  <>
+                                    <span className="text-xs">{sizeInfo}</span>
+                                    <span>•</span>
+                                  </>
+                                )}
+                                <span className="font-bold text-base text-red-500">
+                                  {formatPrice(product.current_price)}
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </button>
                       )

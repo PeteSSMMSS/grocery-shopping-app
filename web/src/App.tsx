@@ -169,31 +169,29 @@ function App() {
         <span className="text-3xl leading-none">+</span>
       </button>
 
-      {/* Mobile: Catalog Modal */}
+      {/* Mobile: Catalog Modal - Fullscreen */}
       {isCatalogOpen && (
-        <div className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
-          <div className="bg-[#1f1f1f] w-full h-[85vh] rounded-t-3xl overflow-hidden flex flex-col">
-            {/* Modal Header */}
-            <div className="bg-[#282828] p-4 flex items-center justify-between border-b border-neutral-800">
-              <h2 className="text-xl font-bold text-neutral-100">Produkte hinzufügen</h2>
-              <button
-                onClick={() => setIsCatalogOpen(false)}
-                className="p-2 text-neutral-400 hover:text-neutral-100 active:bg-neutral-700 rounded-lg transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-            {/* Modal Content */}
-            <div className="flex-1 overflow-auto">
-              <CatalogPane
-                products={products}
-                categories={categories}
-                onAddToList={(productId) => {
-                  addItemMutation.mutate({ product_id: productId, qty: 1 })
-                  setToast({ message: '✅ Zur Liste hinzugefügt!', type: 'success' })
-                }}
-              />
-            </div>
+        <div className="md:hidden fixed inset-0 bg-[#1f1f1f] z-50 flex flex-col">
+          {/* Modal Header */}
+          <div className="bg-[#282828] p-4 flex items-center justify-between border-b border-neutral-800">
+            <h2 className="text-xl font-bold text-neutral-100">Produkte hinzufügen</h2>
+            <button
+              onClick={() => setIsCatalogOpen(false)}
+              className="p-2 text-neutral-400 hover:text-neutral-100 active:bg-neutral-700 rounded-lg transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+          {/* Modal Content - Full height */}
+          <div className="flex-1 overflow-auto">
+            <CatalogPane
+              products={products}
+              categories={categories}
+              onAddToList={(productId) => {
+                addItemMutation.mutate({ product_id: productId, qty: 1 })
+                setToast({ message: '✅ Zur Liste hinzugefügt!', type: 'success' })
+              }}
+            />
           </div>
         </div>
       )}
