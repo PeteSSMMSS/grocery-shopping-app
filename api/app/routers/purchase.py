@@ -46,6 +46,7 @@ def checkout(
         
         # Prepare items for shopping event
         shopping_event_items.append({
+            "product_id": item.product_id,
             "product_name": item.product.name,
             "qty": item.qty,
             "price_cents": price
