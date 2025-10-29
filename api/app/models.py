@@ -75,12 +75,13 @@ class List(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relationships - explicitly order items by added_at to maintain shopping order
+    # Using selectin to ensure fresh load on each request (no caching issues)
     items = relationship(
         "ListItem", 
         back_populates="list", 
         cascade="all, delete-orphan",
         order_by="ListItem.added_at.asc()",
-        lazy="joined"
+        lazy="selectin"
     )
     purchases = relationship("Purchase", back_populates="list")
 
