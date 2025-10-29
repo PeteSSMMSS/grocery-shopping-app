@@ -2,7 +2,7 @@
 Shopping list router.
 """
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 
 from app.db import get_db
@@ -15,6 +15,8 @@ def get_or_create_active_list(db: Session) -> models.List:
     """Get the active list or create one if it doesn't exist."""
     active_list = db.query(models.List).filter(
         models.List.is_active == True
+    ).options(
+        joinedload(models.List.items).joinedload(models.ListItem.product)
     ).first()
     
     if not active_list:
