@@ -1,0 +1,48 @@
+# Production Docker Compose for Synology NAS
+# Usage: docker compose -f docker-compose.prod.yml up -d
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: groceries-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8080}:8080"
+    environment:
+      # Database
+      DATABASE_URL: ${DATABASE_URL}
+      
+      # API Settings
+      API_HOST: 0.0.0.0
+      API_PORT: 8080
+      
+      # CORS - Erlaubt Zugriff von deiner Domain
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://192.168.178.110:5173}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - grocery-network
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: groceries-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-5173}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - grocery-network
+
+networks:
+  grocery-network:
+    driver: bridge
