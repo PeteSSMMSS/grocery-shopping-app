@@ -23,9 +23,9 @@ function App() {
   window.addEventListener('offline', () => setOnline(false))
 
   const { data: supermarkets = [] } = useSupermarkets()
-  const [selectedMarketId, setSelectedMarketId] = useState<number>(1)
+  const [selectedMarketId, setSelectedMarketId] = useState<number | null>(null)
   const defaultMarketId = useMemo(() => supermarkets[0]?.id ?? 1, [supermarkets])
-  const effectiveMarketId = selectedMarketId || defaultMarketId
+  const effectiveMarketId = selectedMarketId ?? defaultMarketId
 
   const { data: activeList, isLoading } = useQuery({
     queryKey: ['activeList', effectiveMarketId],
