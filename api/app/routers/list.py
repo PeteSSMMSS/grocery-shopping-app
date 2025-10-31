@@ -11,16 +11,25 @@ from app import models, schemas
 router = APIRouter(prefix="/api/lists", tags=["lists"])
 
 
-def get_or_create_active_list(db: Session) -> models.List:
-    """Get the active list or create one if it doesn't exist."""
-    active_list = db.query(models.List).filter(
-        models.List.is_active == True
+def get_or_create_active_list(db: Session, supermarket_id: int = 1) -> models.ShoppingList:
+    """Get the active list for a supermarket or create one if it doesn't exist."""
+    active_list = db.query(models.ShoppingList).filter(
+        models.ShoppingList.is_active == True,
+        models.ShoppingList.supermarket_id == supermarket_id
     ).options(
-        joinedload(models.List.items).joinedload(models.ListItem.product)
+        joinedload(models.ShoppingList.items).joinedload(models.ListItem.product)
     ).first()
     
     if not active_list:
-        active_list = models.List(name="Einkauf", is_active=True)
+        # Get supermarket name for list title
+        supermarket = db.query(models.Supermarket).filter(models.Supermarket.id == supermarket_id).first()
+        list_name = f"{supermarket.name} Einkauf" if supermarket else "Einkauf"
+        
+        active_list = models.ShoppingList(
+            name=list_name, 
+            is_active=True,
+            supermarket_id=supermarket_id
+        )
         db.add(active_list)
         db.commit()
         db.refresh(active_list)
