@@ -295,6 +295,26 @@ export const api = {
     
     delete: (id: number) => fetchAPI<void>(`/api/events/${id}`, { method: 'DELETE' }),
   },
+
+  supermarkets: {
+    getAll: () => fetchAPI<Supermarket[]>('/api/supermarkets/'),
+    
+    getById: (id: number) => fetchAPI<Supermarket>(`/api/supermarkets/${id}`),
+    
+    create: (data: { name: string; color?: string; logo_url?: string }) =>
+      fetchAPI<Supermarket>('/api/supermarkets/', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    
+    update: (id: number, data: { name?: string; color?: string; logo_url?: string }) =>
+      fetchAPI<Supermarket>(`/api/supermarkets/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
+    
+    delete: (id: number) => fetchAPI<void>(`/api/supermarkets/${id}`, { method: 'DELETE' }),
+  },
 };
 
 export default api;

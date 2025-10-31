@@ -3,7 +3,7 @@
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as supermarketService from '../services/supermarkets';
-import type { Supermarket, SupermarketCreate, SupermarketUpdate } from '../services/supermarkets';
+import type { SupermarketCreate, SupermarketUpdate } from '../services/supermarkets';
 
 /**
  * Hook to fetch all supermarkets
