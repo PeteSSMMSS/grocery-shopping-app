@@ -103,8 +103,8 @@ function App() {
             )}
           </div>
           <div className="flex items-center gap-2">
-            {/* Desktop: Full buttons */}
-            <div className="hidden md:flex items-center gap-2">
+            {/* Desktop: Full buttons (ab lg) */}
+            <div className="hidden lg:flex items-center gap-2">
               {/* Supermarkt-Auswahl (Desktop) */}
               <div className="relative">
                 <select
@@ -152,8 +152,8 @@ function App() {
               </button>
             </div>
 
-            {/* Mobile: Only "Erledigt" button */}
-            <div className="flex md:hidden items-center gap-1">
+            {/* Mobile/Tablet: Only "Erledigt" button bis <lg */}
+            <div className="flex lg:hidden items-center gap-1">
               <button
                 onClick={() => setIsCheckoutConfirmOpen(true)}
                 disabled={!activeList?.items.length || checkoutMutation.isPending}
@@ -192,14 +192,14 @@ function App() {
       {/* Mobile: Floating Action Button to open Catalog */}
       <button
         onClick={() => setIsCatalogOpen(true)}
-        className="md:hidden fixed bottom-6 right-6 w-16 h-16 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-full shadow-2xl flex items-center justify-center z-50 touch-manipulation"
+        className="lg:hidden fixed bottom-6 right-6 w-16 h-16 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-full shadow-2xl flex items-center justify-center z-50 touch-manipulation"
         aria-label="Produktkatalog öffnen"
       >
         <span className="text-3xl leading-none">+</span>
       </button>
 
       {/* Mobile: Floating Supermarket Selector - bottom-left */}
-      <div className="md:hidden fixed bottom-6 left-6 z-50">
+  <div className="lg:hidden fixed bottom-6 left-6 z-50">
         <label className="sr-only" htmlFor="market-select">Supermarkt auswählen</label>
         <select
           id="market-select"
