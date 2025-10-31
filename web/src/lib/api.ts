@@ -186,11 +186,12 @@ export const api = {
 
   // Products
   products: {
-    getAll: (params?: { search?: string; category?: number; active?: boolean }) => {
+    getAll: (params?: { search?: string; category?: number; active?: boolean; supermarketId?: number }) => {
       const query = new URLSearchParams();
       if (params?.search) query.set('search', params.search);
       if (params?.category !== undefined) query.set('category', params.category.toString());
       if (params?.active !== undefined) query.set('active', params.active.toString());
+      if (params?.supermarketId !== undefined) query.set('supermarket_id', params.supermarketId.toString());
       
       return fetchAPI<Product[]>(`/api/products?${query}`);
     },
@@ -220,27 +221,27 @@ export const api = {
 
   // Shopping List
   list: {
-    getActive: () => fetchAPI<ActiveList>('/api/lists/active'),
+  getActive: (supermarketId: number = 1) => fetchAPI<ActiveList>(`/api/lists/active?supermarket_id=${supermarketId}`),
     
-    addItem: (product_id: number, qty: number = 1) =>
-      fetchAPI<ListItem>('/api/lists/active/items', {
+    addItem: (product_id: number, qty: number = 1, supermarketId: number = 1) =>
+      fetchAPI<ListItem>(`/api/lists/active/items?supermarket_id=${supermarketId}` , {
         method: 'POST',
         body: JSON.stringify({ product_id, qty }),
       }),
     
-    updateItem: (id: number, data: { qty?: number; is_checked?: boolean }) =>
-      fetchAPI<ListItem>(`/api/lists/active/items/${id}`, {
+    updateItem: (id: number, data: { qty?: number; is_checked?: boolean }, supermarketId: number = 1) =>
+      fetchAPI<ListItem>(`/api/lists/active/items/${id}?supermarket_id=${supermarketId}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
       }),
     
-    removeItem: (id: number) =>
-      fetchAPI<void>(`/api/lists/active/items/${id}`, { method: 'DELETE' }),
+    removeItem: (id: number, supermarketId: number = 1) =>
+      fetchAPI<void>(`/api/lists/active/items/${id}?supermarket_id=${supermarketId}`, { method: 'DELETE' }),
   },
 
   // Purchases
   purchase: {
-    checkout: () => fetchAPI<Purchase>('/api/purchase/checkout', { method: 'POST' }),
+  checkout: (supermarketId: number = 1) => fetchAPI<Purchase>(`/api/purchase/checkout?supermarket_id=${supermarketId}`, { method: 'POST' }),
     getHistory: (limit: number = 20) =>
       fetchAPI<Purchase[]>(`/api/purchase/history?limit=${limit}`),
     getOne: (id: number) => fetchAPI<Purchase>(`/api/purchase/${id}`),
