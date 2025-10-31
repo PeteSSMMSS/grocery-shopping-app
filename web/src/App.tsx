@@ -28,7 +28,7 @@ function App() {
   const effectiveMarketId = selectedMarketId || defaultMarketId
 
   const { data: activeList, isLoading } = useQuery({
-    queryKey: ['activeList'],
+    queryKey: ['activeList', effectiveMarketId],
     queryFn: () => api.list.getActive(effectiveMarketId),
     enabled: !!effectiveMarketId,
     refetchInterval: online ? 30000 : false, // 30 Sekunden statt 10
@@ -50,7 +50,7 @@ function App() {
     mutationFn: ({ product_id, qty }: { product_id: number; qty: number }) =>
       api.list.addItem(product_id, qty, effectiveMarketId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['activeList'] })
+      queryClient.invalidateQueries({ queryKey: ['activeList', effectiveMarketId] })
     },
   })
 
@@ -58,21 +58,21 @@ function App() {
     mutationFn: ({ id, data }: { id: number; data: { qty?: number; is_checked?: boolean } }) =>
       api.list.updateItem(id, data, effectiveMarketId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['activeList'] })
+      queryClient.invalidateQueries({ queryKey: ['activeList', effectiveMarketId] })
     },
   })
 
   const removeItemMutation = useMutation({
   mutationFn: (id: number) => api.list.removeItem(id, effectiveMarketId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['activeList'] })
+      queryClient.invalidateQueries({ queryKey: ['activeList', effectiveMarketId] })
     },
   })
 
   const checkoutMutation = useMutation({
   mutationFn: () => api.purchase.checkout(effectiveMarketId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['activeList'] })
+  queryClient.invalidateQueries({ queryKey: ['activeList', effectiveMarketId] })
       queryClient.invalidateQueries({ queryKey: ['purchases'] })
       queryClient.invalidateQueries({ queryKey: ['shopping-events'] })
       setToast({ message: '✅ Einkauf erfolgreich erledigt!', type: 'success' })
