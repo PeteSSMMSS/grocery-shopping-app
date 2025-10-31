@@ -83,20 +83,22 @@ class ProductPrice(Base):
     product = relationship("Product", back_populates="prices")
 
 
-class List(Base):
+class ShoppingList(Base):
     """Shopping lists"""
-    __tablename__ = "lists"
+    __tablename__ = "shopping_lists"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False, default="Einkauf")
+    supermarket_id = Column(Integer, ForeignKey("supermarkets.id"), nullable=False, index=True)
     is_active = Column(Boolean, default=True, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    # Relationships - explicitly order items by added_at to maintain shopping order
-    # Using selectin to ensure fresh load on each request (no caching issues)
+    # Relationships
+    supermarket = relationship("Supermarket", back_populates="shopping_lists")
     items = relationship(
         "ListItem", 
-        back_populates="list", 
+        back_populates="shopping_list",
         cascade="all, delete-orphan",
         order_by="ListItem.added_at.asc()",
         lazy="selectin"
