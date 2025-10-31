@@ -8,6 +8,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: false, // DEAKTIVIERT Service Worker für Development
+      disable: process.env.NODE_ENV === 'development', // Nur in Production
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
         name: 'Einkaufsliste',
