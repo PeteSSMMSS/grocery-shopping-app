@@ -190,10 +190,12 @@ class PurchaseItem(PurchaseItemBase):
 class Purchase(BaseModel):
     id: int
     list_id: int
+    supermarket_id: int
     purchased_at: datetime
     total_cents: int
     updated_at: datetime
     items: ListType[PurchaseItem] = []
+    supermarket: Optional[Supermarket] = None
 
     model_config = ConfigDict(from_attributes=True)
 

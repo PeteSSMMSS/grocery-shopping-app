@@ -92,7 +92,18 @@ def checkout(
     db.commit()
     db.refresh(db_purchase)
     
-    return db_purchase
+    # Enrich response with supermarket details (from active list)
+    # Pydantic model includes supermarket_id and optional supermarket relation
+    return {
+        "id": db_purchase.id,
+        "list_id": db_purchase.list_id,
+        "supermarket_id": active_list.supermarket_id,
+        "purchased_at": db_purchase.purchased_at,
+        "total_cents": db_purchase.total_cents,
+        "updated_at": db_purchase.updated_at,
+        "items": db_purchase.items,
+        "supermarket": active_list.supermarket,
+    }
 
 
 @router.get("/history", response_model=list[schemas.Purchase])
