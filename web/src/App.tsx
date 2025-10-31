@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from './lib/api'
 import ListPane from './components/ListPane'
@@ -7,6 +7,7 @@ import SettingsModal from './components/SettingsModal'
 import MealsModal from './components/MealsModal'
 import CalendarModal from './components/CalendarModal'
 import Toast from './components/Toast'
+import { useSupermarkets } from './hooks/useSupermarkets'
 
 function App() {
   const queryClient = useQueryClient()
@@ -21,16 +22,23 @@ function App() {
   window.addEventListener('online', () => setOnline(true))
   window.addEventListener('offline', () => setOnline(false))
 
+  const { data: supermarkets = [] } = useSupermarkets()
+  const [selectedMarketId, setSelectedMarketId] = useState<number>(1)
+  const defaultMarketId = useMemo(() => supermarkets[0]?.id ?? 1, [supermarkets])
+  const effectiveMarketId = selectedMarketId || defaultMarketId
+
   const { data: activeList, isLoading } = useQuery({
     queryKey: ['activeList'],
-    queryFn: () => api.list.getActive(),
+    queryFn: () => api.list.getActive(effectiveMarketId),
+    enabled: !!effectiveMarketId,
     refetchInterval: online ? 30000 : false, // 30 Sekunden statt 10
     staleTime: 5000, // Daten bleiben 5 Sekunden "frisch"
   })
 
   const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => api.products.getAll({ active: true }),
+    queryKey: ['products', effectiveMarketId],
+    queryFn: () => api.products.getAll({ active: true, supermarketId: effectiveMarketId }),
+    enabled: !!effectiveMarketId,
   })
 
   const { data: categories = [] } = useQuery({
@@ -40,7 +48,7 @@ function App() {
 
   const addItemMutation = useMutation({
     mutationFn: ({ product_id, qty }: { product_id: number; qty: number }) =>
-      api.list.addItem(product_id, qty),
+      api.list.addItem(product_id, qty, effectiveMarketId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeList'] })
     },
@@ -48,21 +56,21 @@ function App() {
 
   const updateItemMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: { qty?: number; is_checked?: boolean } }) =>
-      api.list.updateItem(id, data),
+      api.list.updateItem(id, data, effectiveMarketId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeList'] })
     },
   })
 
   const removeItemMutation = useMutation({
-    mutationFn: (id: number) => api.list.removeItem(id),
+  mutationFn: (id: number) => api.list.removeItem(id, effectiveMarketId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeList'] })
     },
   })
 
   const checkoutMutation = useMutation({
-    mutationFn: () => api.purchase.checkout(),
+  mutationFn: () => api.purchase.checkout(effectiveMarketId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activeList'] })
       queryClient.invalidateQueries({ queryKey: ['purchases'] })
@@ -97,6 +105,26 @@ function App() {
           <div className="flex items-center gap-2">
             {/* Desktop: Full buttons */}
             <div className="hidden md:flex items-center gap-2">
+              {/* Supermarkt-Auswahl (Desktop) */}
+              <div className="relative">
+                <select
+                  value={effectiveMarketId}
+                  onChange={(e) => {
+                    const id = parseInt(e.target.value, 10)
+                    setSelectedMarketId(id)
+                    // Queries neu laden
+                    queryClient.invalidateQueries({ queryKey: ['activeList'] })
+                    queryClient.invalidateQueries({ queryKey: ['products'] })
+                    queryClient.invalidateQueries({ queryKey: ['products', id] })
+                  }}
+                  className="px-4 py-2 bg-neutral-700 text-neutral-200 rounded-lg hover:bg-neutral-600 font-medium transition-colors"
+                  title="Supermarkt auswählen"
+                >
+                  {(supermarkets || []).map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </select>
+              </div>
               <button
                 onClick={() => setIsCheckoutConfirmOpen(true)}
                 disabled={!activeList?.items.length || checkoutMutation.isPending}
