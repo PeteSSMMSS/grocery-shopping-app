@@ -41,11 +41,11 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
 
   // Mutations
   const createProductMutation = useMutation({
-    mutationFn: (data: { name: string; category_id?: number; price_type?: string; package_size?: number; package_unit?: string; price_cents?: number }) =>
+    mutationFn: (data: { name: string; category_id?: number; supermarket_id: number; price_type?: string; package_size?: number; package_unit?: string; price_cents?: number }) =>
       api.products.create(data),
     onSuccess: () => {
       onRefresh()
-      setProductForm({ name: '', category_id: null, price_type: 'per_package', package_size: '', package_unit: 'g', price_cents: '' })
+      setProductForm({ name: '', category_id: null, supermarket_id: 1, price_type: 'per_package', package_size: '', package_unit: 'g', price_cents: '' })
       setToast({ message: '✅ Produkt erfolgreich erstellt!', type: 'success' })
     },
     onError: () => {
