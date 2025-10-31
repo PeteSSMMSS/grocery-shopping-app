@@ -9,7 +9,7 @@ services:
     container_name: groceries-api
     restart: unless-stopped
     ports:
-      - "${API_PORT:-8080}:8080"
+      - "${API_PORT:-8081}:8080"
     environment:
       # Database
       DATABASE_URL: ${DATABASE_URL}
