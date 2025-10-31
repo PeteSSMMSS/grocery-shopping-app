@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import api, { Product, Category } from '../lib/api'
+import { useSupermarkets } from '../hooks/useSupermarkets'
 import ConfirmModal from './ConfirmModal'
 import Toast from './Toast'
 
@@ -25,11 +26,15 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
   const [productForm, setProductForm] = useState({
     name: '',
     category_id: null as number | null,
+    supermarket_id: 1 as number, // Default: Netto
     price_type: 'per_package' as 'per_package' | 'per_kg' | 'per_100g' | 'per_liter',
     package_size: '',
     package_unit: 'g' as string,
     price_cents: '',
   })
+
+  // Fetch supermarkets
+  const { data: supermarkets = [] } = useSupermarkets()
 
   // Category form
   const [categoryForm, setCategoryForm] = useState({ name: '' })
