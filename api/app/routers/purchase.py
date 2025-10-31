@@ -1,7 +1,7 @@
 """
 Purchase/checkout router.
 """
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -14,6 +14,7 @@ router = APIRouter(prefix="/api/purchase", tags=["purchase"])
 
 @router.post("/checkout", response_model=schemas.Purchase, status_code=201)
 def checkout(
+    supermarket_id: int = Query(1, ge=1),
     db: Session = Depends(get_db)
 ):
     """
@@ -24,7 +25,7 @@ def checkout(
     - Clears the active list
     - Returns the completed purchase
     """
-    active_list = get_or_create_active_list(db)
+    active_list = get_or_create_active_list(db, supermarket_id=supermarket_id)
     
     if not active_list.items:
         raise HTTPException(status_code=400, detail="Cannot checkout with empty list")

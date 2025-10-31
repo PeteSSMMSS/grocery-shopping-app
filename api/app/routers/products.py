@@ -19,6 +19,7 @@ def get_products(
     search: Optional[str] = Query(None, description="Search in product name"),
     category: Optional[int] = Query(None, description="Filter by category ID"),
     active: Optional[bool] = Query(None, description="Filter by active status"),
+    supermarket: Optional[int] = Query(None, description="Filter by supermarket ID"),
     db: Session = Depends(get_db)
 ):
     """
@@ -37,6 +38,8 @@ def get_products(
     
     if active is not None:
         query = query.filter(models.Product.is_active == active)
+    if supermarket is not None:
+        query = query.filter(models.Product.supermarket_id == supermarket)
     
     products = query.order_by(models.Product.name).all()
     return products

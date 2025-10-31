@@ -1,7 +1,7 @@
 """
 Shopping list router.
 """
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 
@@ -40,6 +40,7 @@ def get_or_create_active_list(db: Session, supermarket_id: int = 1) -> models.Sh
 
 @router.get("/active", response_model=schemas.ActiveListResponse)
 def get_active_list(
+    supermarket_id: int = Query(1, ge=1),
     db: Session = Depends(get_db)
 ):
     """
@@ -47,7 +48,7 @@ def get_active_list(
     Calculates total price based on current product prices.
     Items are explicitly sorted by added_at to maintain order.
     """
-    active_list = get_or_create_active_list(db)
+    active_list = get_or_create_active_list(db, supermarket_id=supermarket_id)
     
     # Explicitly load items sorted by added_at to prevent any DB reordering
     sorted_items = (
@@ -81,10 +82,11 @@ def get_active_list(
 @router.post("/active/items", response_model=schemas.ListItem, status_code=201)
 def add_item_to_list(
     item: schemas.ListItemCreate,
+    supermarket_id: int = Query(1, ge=1),
     db: Session = Depends(get_db)
 ):
     """Add an item to the active shopping list."""
-    active_list = get_or_create_active_list(db)
+    active_list = get_or_create_active_list(db, supermarket_id=supermarket_id)
     
     # Check if product exists
     product = db.query(models.Product).filter(models.Product.id == item.product_id).first()
@@ -121,6 +123,7 @@ def add_item_to_list(
 def update_list_item(
     item_id: int,
     item: schemas.ListItemUpdate,
+    supermarket_id: int = Query(1, ge=1),
     db: Session = Depends(get_db)
 ):
     """Update quantity or checked status of a list item."""
@@ -130,7 +133,7 @@ def update_list_item(
         raise HTTPException(status_code=404, detail="List item not found")
     
     # Check if item belongs to active list
-    active_list = get_or_create_active_list(db)
+    active_list = get_or_create_active_list(db, supermarket_id=supermarket_id)
     if db_item.list_id != active_list.id:
         raise HTTPException(status_code=400, detail="Item does not belong to active list")
     
@@ -146,6 +149,7 @@ def update_list_item(
 @router.delete("/active/items/{item_id}", status_code=204)
 def remove_item_from_list(
     item_id: int,
+    supermarket_id: int = Query(1, ge=1),
     db: Session = Depends(get_db)
 ):
     """Remove an item from the active shopping list."""
@@ -155,7 +159,7 @@ def remove_item_from_list(
         raise HTTPException(status_code=404, detail="List item not found")
     
     # Check if item belongs to active list
-    active_list = get_or_create_active_list(db)
+    active_list = get_or_create_active_list(db, supermarket_id=supermarket_id)
     if db_item.list_id != active_list.id:
         raise HTTPException(status_code=400, detail="Item does not belong to active list")
     
