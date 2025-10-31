@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'add_supermarkets'
-down_revision = None  # Will be set automatically
+revision = '007'
+down_revision = '006'
 branch_labels = None
 depends_on = None
 
