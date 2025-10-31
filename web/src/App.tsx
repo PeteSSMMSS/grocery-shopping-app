@@ -183,6 +183,7 @@ function App() {
             <CatalogPane
               products={products}
               categories={categories}
+              supermarketId={effectiveMarketId}
               onAddToList={(productId) => addItemMutation.mutate({ product_id: productId, qty: 1 })}
             />
           </div>
@@ -238,6 +239,7 @@ function App() {
             <CatalogPane
               products={products}
               categories={categories}
+              supermarketId={effectiveMarketId}
               onAddToList={(productId) => {
                 addItemMutation.mutate({ product_id: productId, qty: 1 })
                 setToast({ message: '✅ Zur Liste hinzugefügt!', type: 'success' })

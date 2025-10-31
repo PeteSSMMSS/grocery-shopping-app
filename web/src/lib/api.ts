@@ -80,6 +80,8 @@ export interface Purchase {
   total_cents: number;
   updated_at: string;
   items: PurchaseItem[];
+  supermarket_id?: number;
+  supermarket?: Supermarket;
 }
 
 export interface PurchaseItem {
@@ -198,7 +200,15 @@ export const api = {
     
     getOne: (id: number) => fetchAPI<Product>(`/api/products/${id}`),
     
-    create: (data: { name: string; category_id?: number; unit_weight?: string; price_cents?: number }) => 
+    create: (data: {
+      name: string;
+      category_id: number;
+      supermarket_id: number;
+      price_cents?: number;
+      price_type?: 'per_package' | 'per_kg' | 'per_100g' | 'per_liter';
+      package_size?: number;
+      package_unit?: string;
+    }) => 
       fetchAPI<Product>('/api/products', {
         method: 'POST',
         body: JSON.stringify(data),
