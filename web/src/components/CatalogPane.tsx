@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import type { Product, Category } from '../lib/api'
 import { api } from '../lib/api'
 
@@ -32,7 +32,7 @@ export default function CatalogPane({ products, categories, onAddToList, superma
     setPackageUnit('')
   }
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreate = async (e: FormEvent) => {
     e.preventDefault()
     if (!name.trim() || !categoryId) return
     setCreating(true)

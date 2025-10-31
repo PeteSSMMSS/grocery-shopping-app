@@ -185,6 +185,10 @@ function App() {
               categories={categories}
               supermarketId={effectiveMarketId}
               onAddToList={(productId) => addItemMutation.mutate({ product_id: productId, qty: 1 })}
+              onProductCreated={() => {
+                queryClient.invalidateQueries({ queryKey: ['products', effectiveMarketId] })
+                setToast({ message: '✅ Produkt erstellt und hinzugefügt!', type: 'success' })
+              }}
             />
           </div>
         </div>
@@ -243,6 +247,10 @@ function App() {
               onAddToList={(productId) => {
                 addItemMutation.mutate({ product_id: productId, qty: 1 })
                 setToast({ message: '✅ Zur Liste hinzugefügt!', type: 'success' })
+              }}
+              onProductCreated={() => {
+                queryClient.invalidateQueries({ queryKey: ['products', effectiveMarketId] })
+                setToast({ message: '✅ Produkt erstellt und hinzugefügt!', type: 'success' })
               }}
             />
           </div>
