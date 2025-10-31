@@ -6,53 +6,13 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   plugins: [
     react(),
+    // Disable PWA/Service Worker in local builds to avoid caching old API bases
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: false, // DEAKTIVIERT Service Worker für Development
-      disable: process.env.NODE_ENV === 'development', // Nur in Production
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-      manifest: {
-        name: 'Einkaufsliste',
-        short_name: 'Einkauf',
-        description: 'Minimalistische Einkaufslisten-App mit Offline-Unterstützung',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
-        display: 'standalone',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          }
-        ]
-      },
-      workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: /^http:\/\/.*\/api\/.*/,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              },
-              backgroundSync: {
-                name: 'api-queue',
-                options: {
-                  maxRetentionTime: 24 * 60 // 24 hours
-                }
-              }
-            }
-          }
-        ]
-      }
+      injectRegister: false,
+      disable: true,
+      manifest: false,
+      workbox: undefined
     })
   ],
   server: {
