@@ -18,7 +18,10 @@ app = FastAPI(
 )
 
 # Configure CORS
-origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+origins = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://192.168.178.123:5173,https://shopping.dromsjelhome.com"
+).split(",")
 
 app.add_middleware(
     CORSMiddleware,
