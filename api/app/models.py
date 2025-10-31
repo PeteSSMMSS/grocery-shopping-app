@@ -8,6 +8,22 @@ from sqlalchemy.sql import func
 from app.db import Base
 
 
+class Supermarket(Base):
+    """Supermarkets/Stores where products are sold"""
+    __tablename__ = "supermarkets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, unique=True, index=True)
+    color = Column(String(7), nullable=True)  # Hex color for UI, e.g., #FF0000
+    logo_url = Column(String(500), nullable=True)  # Optional logo URL
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationships
+    products = relationship("Product", back_populates="supermarket")
+    shopping_lists = relationship("ShoppingList", back_populates="supermarket")
+
+
 class Category(Base):
     """Product categories (e.g., Fruits, Vegetables, Dairy)"""
     __tablename__ = "categories"
@@ -27,6 +43,7 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False, index=True)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    supermarket_id = Column(Integer, ForeignKey("supermarkets.id"), nullable=False, index=True)
     
     # Flexible pricing system
     price_type = Column(String(20), nullable=False, default='per_package')  # per_package, per_kg, per_100g, per_liter
@@ -38,6 +55,7 @@ class Product(Base):
 
     # Relationships
     category = relationship("Category", back_populates="products")
+    supermarket = relationship("Supermarket", back_populates="products")
     prices = relationship("ProductPrice", back_populates="product", order_by="ProductPrice.valid_from.desc()")
     list_items = relationship("ListItem", back_populates="product")
     purchase_items = relationship("PurchaseItem", back_populates="product")
