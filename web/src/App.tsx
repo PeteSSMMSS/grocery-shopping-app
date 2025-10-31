@@ -152,8 +152,25 @@ function App() {
               </button>
             </div>
 
-            {/* Mobile: Only "Erledigt" button */}
-            <div className="flex md:hidden items-center gap-1">
+            {/* Mobile: Supermarkt-Auswahl + Erledigt */}
+            <div className="flex md:hidden items-center gap-2">
+              <div className="relative">
+                <select
+                  value={effectiveMarketId}
+                  onChange={(e) => {
+                    const id = parseInt(e.target.value, 10)
+                    setSelectedMarketId(id)
+                    queryClient.invalidateQueries({ queryKey: ['activeList', id] })
+                    queryClient.invalidateQueries({ queryKey: ['products', id] })
+                  }}
+                  className="px-3 py-2 bg-neutral-700 text-neutral-100 rounded-lg active:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                  title="Supermarkt auswählen"
+                >
+                  {(supermarkets || []).map((m) => (
+                    <option key={m.id} value={m.id}>{m.name}</option>
+                  ))}
+                </select>
+              </div>
               <button
                 onClick={() => setIsCheckoutConfirmOpen(true)}
                 disabled={!activeList?.items.length || checkoutMutation.isPending}
