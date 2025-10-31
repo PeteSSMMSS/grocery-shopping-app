@@ -1,7 +1,7 @@
 /**
  * API service for supermarkets
  */
-import api from './api';
+import api from '../lib/api';
 
 export interface Supermarket {
   id: number;

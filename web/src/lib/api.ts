@@ -6,6 +6,15 @@ const API_BASE = (import.meta as any).env?.VITE_API_BASE || 'http://localhost:80
 
 // ============= Types =============
 
+export interface Supermarket {
+  id: number;
+  name: string;
+  color: string | null;
+  logo_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Category {
   id: number;
   name: string;
@@ -25,6 +34,7 @@ export interface Product {
   id: number;
   name: string;
   category_id: number | null;
+  supermarket_id: number;
   price_type: 'per_package' | 'per_kg' | 'per_100g' | 'per_liter';
   package_size: number | null;
   package_unit: string | null;  // g, kg, stück, l, ml
@@ -32,6 +42,7 @@ export interface Product {
   updated_at: string;
   current_price: number | null;
   category?: Category;
+  supermarket?: Supermarket;
   prices?: ProductPrice[];
 }
 
@@ -49,8 +60,11 @@ export interface ListItem {
 export interface ActiveList {
   id: number;
   name: string;
+  supermarket_id: number;
   is_active: boolean;
+  created_at: string;
   updated_at: string;
+  supermarket?: Supermarket;
   items: ListItem[];
   total_cents: number;
 }
