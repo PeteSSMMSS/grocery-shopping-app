@@ -43,7 +43,7 @@ def get_changes_since(
     ).all()
     
     # Get updated list items from active list
-    active_list = db.query(models.List).filter(models.List.is_active == True).first()
+    active_list = db.query(models.ShoppingList).filter(models.ShoppingList.is_active == True).first()
     list_items = []
     if active_list:
         list_items = db.query(models.ListItem).filter(
@@ -109,7 +109,7 @@ def apply_changes(
 
 def _apply_list_item_change(db: Session, change: schemas.SyncChange):
     """Apply a change to a list item."""
-    active_list = db.query(models.List).filter(models.List.is_active == True).first()
+    active_list = db.query(models.ShoppingList).filter(models.ShoppingList.is_active == True).first()
     
     if not active_list:
         raise ValueError("No active list found")
