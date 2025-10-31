@@ -106,17 +106,36 @@ def checkout(
     }
 
 
-@router.get("/history", response_model=list[schemas.Purchase])
+@router.get("/history")
 def get_purchase_history(
     limit: int = 20,
     db: Session = Depends(get_db)
 ):
-    """Get purchase history (last N purchases)."""
-    purchases = db.query(models.Purchase).order_by(
+    """Get purchase history (last N purchases) with supermarket info."""
+    from sqlalchemy.orm import joinedload
+    
+    purchases = db.query(models.Purchase).options(
+        joinedload(models.Purchase.shopping_list).joinedload(models.ShoppingList.supermarket),
+        joinedload(models.Purchase.items).joinedload(models.PurchaseItem.product)
+    ).order_by(
         models.Purchase.purchased_at.desc()
     ).limit(limit).all()
     
-    return purchases
+    # Enrich with supermarket_id from relation
+    result = []
+    for purchase in purchases:
+        result.append({
+            "id": purchase.id,
+            "list_id": purchase.list_id,
+            "supermarket_id": purchase.shopping_list.supermarket_id if purchase.shopping_list else None,
+            "purchased_at": purchase.purchased_at,
+            "total_cents": purchase.total_cents,
+            "updated_at": purchase.updated_at,
+            "items": purchase.items,
+            "supermarket": purchase.shopping_list.supermarket if purchase.shopping_list else None,
+        })
+    
+    return result
 
 
 @router.get("/{purchase_id}", response_model=schemas.Purchase)
