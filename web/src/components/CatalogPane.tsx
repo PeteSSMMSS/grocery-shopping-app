@@ -1,15 +1,68 @@
 import { useState } from 'react'
 import type { Product, Category } from '../lib/api'
+import { api } from '../lib/api'
 
 interface CatalogPaneProps {
   products: Product[]
   categories: Category[]
   onAddToList: (productId: number) => void
+  supermarketId: number
+  onProductCreated?: (product: Product) => void
 }
 
-export default function CatalogPane({ products, categories, onAddToList }: CatalogPaneProps) {
+export default function CatalogPane({ products, categories, onAddToList, supermarketId, onProductCreated }: CatalogPaneProps) {
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
+  const [mode, setMode] = useState<'browse' | 'create'>('browse')
+  const [creating, setCreating] = useState(false)
+  // Create form state
+  const [name, setName] = useState('')
+  const [categoryId, setCategoryId] = useState<number | ''>('')
+  const [priceCents, setPriceCents] = useState<string>('')
+  const [priceType, setPriceType] = useState<'per_package' | 'per_kg' | 'per_100g' | 'per_liter'>('per_package')
+  const [packageSize, setPackageSize] = useState<string>('')
+  const [packageUnit, setPackageUnit] = useState<string>('')
+
+  const resetForm = () => {
+    setName('')
+    setCategoryId('')
+    setPriceCents('')
+    setPriceType('per_package')
+    setPackageSize('')
+    setPackageUnit('')
+  }
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!name.trim() || !categoryId) return
+    setCreating(true)
+    try {
+      const payload: any = {
+        name: name.trim(),
+        category_id: Number(categoryId),
+        supermarket_id: supermarketId,
+        price_type: priceType,
+      }
+      if (priceCents) payload.price_cents = Math.max(0, Math.round(Number(priceCents)))
+      if (packageSize) payload.package_size = Number(packageSize)
+      if (packageUnit) payload.package_unit = packageUnit
+
+      const created = await api.products.create(payload)
+      onProductCreated?.(created)
+      // Nach Erstellung optional direkt zur Liste hinzufügen
+      onAddToList(created.id)
+      // zurück in den Katalog
+      resetForm()
+      setMode('browse')
+      // Fokus zurück zur Suche
+      setSearch('')
+      setSelectedCategory(created.category_id ?? null)
+    } catch (err) {
+      console.error('Produkt-Erstellung fehlgeschlagen', err)
+    } finally {
+      setCreating(false)
+    }
+  }
 
   const formatPrice = (cents: number | null) => {
     if (!cents) return 'Kein Preis'
@@ -34,8 +87,30 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
   return (
     <div className="flex flex-col h-full bg-[#1f1f1f]">
       <div className="p-3 md:p-4 bg-[#282828] border-b border-neutral-800 space-y-3">
-        <h2 className="text-lg md:text-lg font-semibold text-neutral-100">Produktkatalog</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg md:text-lg font-semibold text-neutral-100">Produktkatalog</h2>
+          <div className="flex items-center gap-2">
+            {mode === 'browse' ? (
+              <button
+                onClick={() => setMode('create')}
+                className="px-3 py-2 bg-neutral-700 text-neutral-100 rounded-lg text-sm hover:bg-neutral-600 active:bg-neutral-600"
+              >
+                Neues Produkt
+              </button>
+            ) : (
+              <button
+                onClick={() => setMode('browse')}
+                className="px-3 py-2 bg-neutral-700 text-neutral-100 rounded-lg text-sm hover:bg-neutral-600 active:bg-neutral-600"
+              >
+                Zurück
+              </button>
+            )}
+          </div>
+        </div>
 
+        {/* Browse Mode */}
+        {mode === 'browse' && (
+          <>
         {/* Search - Larger on mobile */}
         <input
           type="text"
@@ -71,9 +146,113 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
             </button>
           ))}
         </div>
+          </>
+        )}
+
+        {/* Create Mode */}
+        {mode === 'create' && (
+          <form onSubmit={handleCreate} className="space-y-3">
+            <div>
+              <label className="block text-sm text-neutral-300 mb-1">Name</label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="z. B. Tomaten passiert"
+                className="w-full px-4 py-3 text-base bg-neutral-800 border border-neutral-700 text-neutral-100 placeholder-neutral-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-neutral-300 mb-1">Kategorie</label>
+              <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value ? Number(e.target.value) : '')}
+                required
+                className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 text-neutral-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                <option value="" disabled>Kategorie wählen…</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm text-neutral-300 mb-1">Preis (Cent, optional)</label>
+                <input
+                  type="number"
+                  min={0}
+                  inputMode="numeric"
+                  value={priceCents}
+                  onChange={(e) => setPriceCents(e.target.value)}
+                  className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 text-neutral-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-neutral-300 mb-1">Preis-Typ</label>
+                <select
+                  value={priceType}
+                  onChange={(e) => setPriceType(e.target.value as any)}
+                  className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 text-neutral-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="per_package">pro Packung</option>
+                  <option value="per_kg">pro kg</option>
+                  <option value="per_100g">pro 100g</option>
+                  <option value="per_liter">pro Liter</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm text-neutral-300 mb-1">Packungsgröße (optional)</label>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  inputMode="decimal"
+                  value={packageSize}
+                  onChange={(e) => setPackageSize(e.target.value)}
+                  className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 text-neutral-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-neutral-300 mb-1">Einheit (optional)</label>
+                <select
+                  value={packageUnit}
+                  onChange={(e) => setPackageUnit(e.target.value)}
+                  className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 text-neutral-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <option value="">—</option>
+                  <option value="g">g</option>
+                  <option value="kg">kg</option>
+                  <option value="stück">stück</option>
+                  <option value="l">l</option>
+                  <option value="ml">ml</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => { resetForm(); setMode('browse') }}
+                className="flex-1 px-4 py-3 bg-neutral-700 text-neutral-200 rounded-xl hover:bg-neutral-600 active:bg-neutral-600 font-medium"
+              >
+                Abbrechen
+              </button>
+              <button
+                type="submit"
+                disabled={creating}
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 active:bg-red-700 font-medium disabled:opacity-50"
+              >
+                {creating ? 'Speichern…' : 'Produkt hinzufügen'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
       {/* Products List - Optimized for mobile */}
+      {mode === 'browse' && (
       <div className="flex-1 overflow-auto p-3 md:p-4">
         {filteredProducts.length === 0 ? (
           <div className="text-center text-neutral-400 py-12">
@@ -138,7 +317,8 @@ export default function CatalogPane({ products, categories, onAddToList }: Catal
             })}
           </div>
         )}
-      </div>
+  </div>
+  )}
     </div>
   )
 }
