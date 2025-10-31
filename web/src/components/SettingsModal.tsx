@@ -41,7 +41,7 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
 
   // Mutations
   const createProductMutation = useMutation({
-    mutationFn: (data: { name: string; category_id?: number; supermarket_id: number; price_type?: string; package_size?: number; package_unit?: string; price_cents?: number }) =>
+    mutationFn: (data: Parameters<typeof api.products.create>[0]) =>
       api.products.create(data),
     onSuccess: () => {
       onRefresh()
