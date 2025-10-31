@@ -112,16 +112,25 @@ class ProductWithPrices(Product):
 
 class ShoppingListBase(BaseModel):
     name: str = Field(default="Einkauf", min_length=1, max_length=200)
+    supermarket_id: int = Field(..., gt=0, description="Supermarket ID")
 
 
 class ShoppingListCreate(ShoppingListBase):
     pass
 
 
+class ShoppingListUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=200)
+    supermarket_id: Optional[int] = Field(None, gt=0)
+    is_active: Optional[bool] = None
+
+
 class ShoppingList(ShoppingListBase):
     id: int
     is_active: bool
+    created_at: datetime
     updated_at: datetime
+    supermarket: Optional["Supermarket"] = None
 
     model_config = ConfigDict(from_attributes=True)
 
