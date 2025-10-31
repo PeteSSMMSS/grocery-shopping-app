@@ -10,16 +10,14 @@ services:
     restart: unless-stopped
     ports:
       - "${API_PORT:-8080}:8080"
-  environment:
+    environment:
       # Database
       DATABASE_URL: ${DATABASE_URL}
-      
       # API Settings
       API_HOST: 0.0.0.0
       API_PORT: 8080
-      
-  # CORS - Erlaubt Zugriff von deiner Domain
-  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://192.168.178.123:5173,https://shopping.dromsjelhome.com}
+      # CORS - Erlaubt Zugriff von deiner Domain
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://192.168.178.123:5173,https://shopping.dromsjelhome.com}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
