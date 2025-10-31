@@ -5,6 +5,13 @@ import App from './App.tsx'
 import './index.css'
 import { setupAutoSync } from './lib/sync.ts'
 
+// Dev-only: aggressively unregister any existing service workers to avoid stale caches
+if (import.meta.env.DEV && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations?.().then((regs) => {
+    regs.forEach((reg) => reg.unregister().catch(() => {}));
+  }).catch(() => {});
+}
+
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
