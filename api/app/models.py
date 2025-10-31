@@ -103,7 +103,7 @@ class ShoppingList(Base):
         order_by="ListItem.added_at.asc()",
         lazy="selectin"
     )
-    purchases = relationship("Purchase", back_populates="list")
+    purchases = relationship("Purchase", back_populates="shopping_list")
 
 
 class ListItem(Base):
@@ -111,7 +111,7 @@ class ListItem(Base):
     __tablename__ = "list_items"
 
     id = Column(Integer, primary_key=True, index=True)
-    list_id = Column(Integer, ForeignKey("lists.id"), nullable=False, index=True)
+    list_id = Column(Integer, ForeignKey("shopping_lists.id"), nullable=False, index=True)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False, index=True)
     qty = Column(Integer, default=1, nullable=False)
     is_checked = Column(Boolean, default=False)
@@ -119,7 +119,7 @@ class ListItem(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relationships
-    list = relationship("List", back_populates="items")
+    shopping_list = relationship("ShoppingList", back_populates="items")
     product = relationship("Product", back_populates="list_items")
 
 
