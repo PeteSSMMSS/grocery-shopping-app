@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 
-from app.routers import categories, products, list, purchase, sync, meals, shopping_events
+from app.routers import categories, products, list, purchase, sync, meals, shopping_events, supermarkets
 
 load_dotenv()
 
@@ -29,6 +29,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(supermarkets.router, prefix="/api/supermarkets", tags=["supermarkets"])
 app.include_router(categories.router)
 app.include_router(products.router)
 app.include_router(list.router)
