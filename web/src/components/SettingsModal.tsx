@@ -150,7 +150,7 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
 
   const resetProductForm = () => {
     setEditingProductId(null)
-    setProductForm({ name: '', category_id: null, price_type: 'per_package', package_size: '', package_unit: 'g', price_cents: '' })
+    setProductForm({ name: '', category_id: null, supermarket_id: 1, price_type: 'per_package', package_size: '', package_unit: 'g', price_cents: '' })
   }
 
   const handleCreateCategory = (e: React.FormEvent) => {
