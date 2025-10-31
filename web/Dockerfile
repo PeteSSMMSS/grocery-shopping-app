@@ -12,8 +12,8 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build argument for API base URL
-ARG VITE_API_BASE=http://localhost:8080
+# Build argument for API base URL (empty -> use relative /api via Nginx proxy)
+ARG VITE_API_BASE=
 ENV VITE_API_BASE=$VITE_API_BASE
 
 # Build the app

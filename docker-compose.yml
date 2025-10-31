@@ -23,13 +23,7 @@ services:
   web:
     build:
       context: ./web
-      args:
-        # Force localhost for local dev to avoid accidental NAS IP from host env
-        - VITE_API_BASE=http://localhost:8080
     container_name: groceries-web
-    environment:
-      # Force localhost for local dev to avoid accidental NAS IP from host env
-      - VITE_API_BASE=http://localhost:8080
     ports:
       - "5173:80"
     depends_on:
