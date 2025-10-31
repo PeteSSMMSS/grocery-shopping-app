@@ -128,13 +128,13 @@ class Purchase(Base):
     __tablename__ = "purchases"
 
     id = Column(Integer, primary_key=True, index=True)
-    list_id = Column(Integer, ForeignKey("lists.id"), nullable=False, index=True)
+    list_id = Column(Integer, ForeignKey("shopping_lists.id"), nullable=False, index=True)
     purchased_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     total_cents = Column(Integer, nullable=False)  # Total price in cents
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relationships
-    list = relationship("List", back_populates="purchases")
+    shopping_list = relationship("ShoppingList", back_populates="purchases")
     items = relationship("PurchaseItem", back_populates="purchase", cascade="all, delete-orphan")
 
 
