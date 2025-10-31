@@ -24,7 +24,8 @@ function App() {
   const { data: activeList, isLoading } = useQuery({
     queryKey: ['activeList'],
     queryFn: () => api.list.getActive(),
-    refetchInterval: online ? 10000 : false,
+    refetchInterval: online ? 30000 : false, // 30 Sekunden statt 10
+    staleTime: 5000, // Daten bleiben 5 Sekunden "frisch"
   })
 
   const { data: products = [] } = useQuery({
