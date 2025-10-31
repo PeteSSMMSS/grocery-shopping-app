@@ -1,46 +1,81 @@
-# 🛒 Einkaufslisten App
+# 🛒 Grocery Shopping App
 
-Minimalistische Einkaufslisten-Webapp mit **Offline-Fähigkeit** (PWA), ähnlich OurGroceries oder Todoist.
+Eine moderne, minimalistische Einkaufslisten-Web-App mit **Offline-Unterstützung** (PWA), optimiert für den täglichen Einkauf.
+
+<div align="center">
+
+![Status](https://img.shields.io/badge/status-active-success.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Platform](https://img.shields.io/badge/platform-web%20%7C%20mobile-lightgrey.svg)
+
+</div>
+
+---
+
+## 🌟 Highlights
+
+- ✅ **Offline-First** - Funktioniert komplett ohne Internetverbindung im Supermarkt
+- ✅ **Schnell & Snappy** - Optimiert für mobile Nutzung mit sofortiger Reaktion
+- ✅ **Intelligente Synchronisation** - Automatischer Sync wenn Verbindung wiederhergestellt
+- ✅ **Kalender-Ansicht** - Einkaufshistorie mit Gesamtpreisen
+- ✅ **Progressive Web App** - Installierbar auf Android/iOS wie eine native App
+
+---
 
 ## ✨ Features
 
-- **📝 Zwei-Spalten-Layout** (Desktop)
-  - Links: Einkaufszettel mit Mengen, Preisen, Gesamtsumme
-  - Rechts: Produktkatalog mit Kategorien & Suchfunktion
-  
-- **📱 Mobile-optimiert**
-  - Bottom-Sheet für schnelles Hinzufügen
-  - Touch-Gesten (Tap, Long-Press)
-  - Fixe Gesamtsumme am unteren Rand
+### 🛍️ Einkaufsliste
+- **Schnelles Hinzufügen** von Produkten aus dem Katalog
+- **Mengen & Preise** werden automatisch berechnet
+- **Gesamtsumme** immer im Blick
+- **Checkbox-System** zum Abhaken während des Einkaufs
+- **Checkout-Funktion** archiviert Einkauf im Kalender
 
-- **🔌 Offline-fähig**
-  - Progressive Web App (PWA)
-  - IndexedDB mit Dexie.js
-  - Background Sync bei Rückkehr ins Netz
+### 📦 Produktkatalog
+- **Kategorisierte Produkte** (Obst, Gemüse, Milchprodukte, etc.)
+- **Suchfunktion** für schnelles Finden
+- **Preishistorie** für jedes Produkt
+- **Einfache Verwaltung** - Produkte hinzufügen, bearbeiten, löschen
 
-- **⚙️ Einstellungen**
-  - Produkte hinzufügen, bearbeiten, löschen
-  - Preisänderungen mit Historie
-  - Kategorien verwalten
+### 📅 Einkaufshistorie
+- **Kalender-Ansicht** aller vergangenen Einkäufe
+- **Detaillierte Übersicht** mit allen gekauften Produkten
+- **Preise zum Kaufzeitpunkt** gespeichert
+- **Statistiken** über Einkaufsverhalten
+
+### 📱 Mobile-Optimiert
+- **Responsive Design** für alle Bildschirmgrößen
+- **Touch-Gesten** (Tap, Long-Press)
+- **Bottom-Sheet** für schnelle Aktionen
+- **Fixierte Navigation** am unteren Rand
+- **Keine App-Store Installation nötig** - läuft direkt im Browser
+
+---
 
 ## 🧱 Tech Stack
 
 ### Backend
-- **Python FastAPI** - REST API
-- **SQLAlchemy/SQLModel** - ORM
+- **Python 3.11** mit **FastAPI** - Modernes, schnelles REST API Framework
+- **SQLAlchemy/SQLModel** - Type-safe ORM
 - **Alembic** - Database Migrations
-- **PostgreSQL** - Datenbank (externe Instanz)
+- **PostgreSQL** - Relationale Datenbank (externe Instanz)
+- **Uvicorn** - ASGI Server
 
 ### Frontend
-- **React + Vite + TypeScript**
-- **Tailwind CSS** - Todoist-ähnlicher Minimalstil
-- **TanStack Query** - Daten-Caching & Mutations
-- **Dexie.js** - IndexedDB für Offline
+- **React 18** mit **TypeScript** - Type-safe UI Development
+- **Vite** - Blazing fast Build Tool
+- **Tailwind CSS** - Utility-first CSS Framework
+- **TanStack Query (React Query)** - Async State Management
+- **Dexie.js** - IndexedDB Wrapper für Offline-Speicherung
 - **Workbox** - Service Worker & Background Sync
+- **Vite PWA Plugin** - Progressive Web App Support
 
 ### Infrastructure
-- **Docker + Docker Compose**
-- **nginx** - Static File Serving (Frontend)
+- **Docker** + **Docker Compose** - Containerisierung
+- **Nginx** - Static File Serving & Reverse Proxy
+- **Cloudflare Tunnel** - Sicherer Zugriff von extern
+
+---
 
 ## 🚀 Quick Start
 
