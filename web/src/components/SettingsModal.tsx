@@ -139,6 +139,7 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
     setProductForm({
       name: product.name,
       category_id: product.category_id,
+      supermarket_id: product.supermarket_id || 1,
       price_type: product.price_type,
       package_size: product.package_size?.toString() || '',
       package_unit: product.package_unit || 'g',
