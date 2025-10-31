@@ -247,6 +247,25 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
                     ))}
                   </select>
                   
+                  {/* Supermarket Selection */}
+                  <select
+                    value={productForm.supermarket_id}
+                    onChange={(e) =>
+                      setProductForm({
+                        ...productForm,
+                        supermarket_id: Number(e.target.value),
+                      })
+                    }
+                    className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 text-neutral-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                    required
+                  >
+                    {supermarkets.map((market) => (
+                      <option key={market.id} value={market.id}>
+                        🏪 {market.name}
+                      </option>
+                    ))}
+                  </select>
+                  
                   {/* Price Type Selection */}
                   <select
                     value={productForm.price_type}
