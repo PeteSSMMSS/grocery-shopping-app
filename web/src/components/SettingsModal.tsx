@@ -115,6 +115,7 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
         data: {
           name: productForm.name,
           category_id: productForm.category_id || undefined,
+          supermarket_id: productForm.supermarket_id,
           price_type: productForm.price_type,
           package_size: productForm.package_size ? parseFloat(productForm.package_size) : undefined,
           package_unit: productForm.package_unit || undefined,
@@ -126,6 +127,7 @@ export default function SettingsModal({ onClose, products, categories, onRefresh
       createProductMutation.mutate({
         name: productForm.name,
         category_id: productForm.category_id || undefined,
+        supermarket_id: productForm.supermarket_id,
         price_type: productForm.price_type,
         package_size: productForm.package_size ? parseFloat(productForm.package_size) : undefined,
         package_unit: productForm.package_unit || undefined,
