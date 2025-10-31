@@ -202,7 +202,7 @@ export const api = {
     
     create: (data: {
       name: string;
-      category_id: number;
+      category_id?: number;
       supermarket_id: number;
       price_cents?: number;
       price_type?: 'per_package' | 'per_kg' | 'per_100g' | 'per_liter';
