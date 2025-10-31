@@ -260,30 +260,133 @@ cd web
 npm test
 ```
 
-## 📱 PWA Installation
+## 📱 PWA Installation auf Android/iOS
 
-Die App kann auf dem Smartphone als PWA installiert werden:
+Die App kann auf dem Smartphone als Progressive Web App installiert werden:
 
-1. Im Browser öffnen (Chrome/Edge/Safari)
-2. "Zum Startbildschirm hinzufügen" wählen
-3. App funktioniert dann auch offline!
+### **Android (Chrome/Edge)**
+1. Öffne `https://shopping.dromsjelhome.com` im Browser
+2. Tippe auf das Menü (⋮) → "Zum Startbildschirm hinzufügen"
+3. Bestätige die Installation
+4. Die App erscheint wie eine normale App auf dem Homescreen
+5. Funktioniert auch komplett offline im Supermarkt!
 
-## 🔄 Deployment
+### **iOS (Safari)**
+1. Öffne die App in Safari
+2. Tippe auf das Teilen-Symbol
+3. "Zum Home-Bildschirm" auswählen
+4. Fertig!
 
-Siehe [DEPLOYMENT.md](./DEPLOYMENT.md) für vollständige Anleitung zum Deployment auf Synology NAS.
+---
+
+## � Production Deployment
+
+### **Synology NAS Deployment**
+
+Vollständige Anleitung: [SYNOLOGY_DEPLOYMENT.md](./SYNOLOGY_DEPLOYMENT.md)
 
 **Quick Deployment:**
 
 ```bash
-# 1. Auf Windows: Code committen
-git add .
-git commit -m "feat: Feature-Beschreibung"
-git push origin main
-
-# 2. Auf NAS: Pull & Restart
-ssh Pierre@192.168.178.123 "cd /volume1/docker/einkaufen && git pull"
-ssh Pierre@192.168.178.123 "cd /volume1/docker/einkaufen && docker compose down && docker compose up -d"
+# Auf der NAS
+cd /volume1/docker/grocery-shopping-app
+git pull
+docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml up -d --build
 ```
+
+### **Mit Cloudflare Tunnel**
+
+Die App läuft über Cloudflare Tunnel für sicheren externen Zugriff:
+- **Frontend:** `https://shopping.dromsjelhome.com` → Port 5173
+- **API:** `https://shopping-api.dromsjelhome.com` → Port 2095
+
+---
+
+## 🏗️ Architektur
+
+```
+┌─────────────────────────────────────────┐
+│   Client (Browser/PWA)                  │
+│   React + TypeScript + Tailwind         │
+│   Service Worker (Offline Support)      │
+└──────────────┬──────────────────────────┘
+               │ HTTPS (Cloudflare Tunnel)
+               ▼
+┌──────────────────────────────────────────┐
+│   Nginx (Port 5173)                      │
+│   Static File Serving                    │
+└──────────────────────────────────────────┘
+
+┌──────────────────────────────────────────┐
+│   FastAPI Backend (Port 2095)            │
+│   REST API + WebSocket (future)          │
+└──────────────┬───────────────────────────┘
+               │
+               ▼
+┌──────────────────────────────────────────┐
+│   PostgreSQL (Port 5588)                 │
+│   Persistent Storage                     │
+└──────────────────────────────────────────┘
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions sind willkommen! Bitte erstelle einen Pull Request für:
+- 🐛 Bug Fixes
+- ✨ Neue Features
+- 📚 Dokumentation
+- 🎨 UI/UX Verbesserungen
+
+---
+
+## 📄 License
+
+Dieses Projekt ist unter der **MIT License** lizenziert - siehe [LICENSE](LICENSE) für Details.
+
+---
+
+## 👤 Autor
+
+**Pierre Droms**
+- 🏠 Private Nutzung
+- 📧 Kontakt über GitHub Issues
+
+---
+
+## 🙏 Acknowledgments
+
+- **FastAPI** - Modernes Python Web Framework
+- **React** - UI Library
+- **Tailwind CSS** - Styling Framework
+- **TanStack Query** - Data Fetching & Caching
+- **Workbox** - PWA & Offline Support
+- **Cloudflare** - Tunnel & CDN
+
+---
+
+## 📝 Changelog
+
+### **v1.0.0** (2025-10-31)
+- ✅ Initial Release
+- ✅ Einkaufsliste mit Checkout
+- ✅ Produktkatalog mit Kategorien
+- ✅ Kalender-Ansicht für Historie
+- ✅ PWA mit Offline-Support
+- ✅ Cloudflare Tunnel Integration
+- ✅ Synology NAS Deployment
+
+---
+
+<div align="center">
+
+**Made with ❤️ for better grocery shopping**
+
+⭐ Star this repo if you find it useful!
+
+</div>
 
 ## 🐛 Troubleshooting
 
