@@ -2,7 +2,11 @@
  * API client for communicating with the backend.
  */
 
-const API_BASE = (import.meta as any).env?.VITE_API_BASE || 'http://localhost:8080';
+// In Dev setzen wir keinen absoluten Host, damit mobile Clients über die gleiche Origin
+// (Vite-Dev-Server) via Proxy an die API gelangen. In Prod kann VITE_API_BASE genutzt werden.
+const API_BASE = (import.meta as any).env?.PROD
+  ? ((import.meta as any).env?.VITE_API_BASE || 'http://localhost:8080')
+  : '';
 
 // ============= Types =============
 

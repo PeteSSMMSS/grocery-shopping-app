@@ -17,7 +17,16 @@ export default defineConfig({
   ],
   server: {
     port: 5173,
-    host: true
+    host: true,
+    proxy: {
+      // Proxy API requests in dev to avoid CORS and localhost issues on mobile
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        // preserve /api prefix
+        rewrite: (path) => path,
+      }
+    }
   },
   preview: {
     port: 80,
