@@ -17,7 +17,8 @@ def get_or_create_active_list(db: Session, supermarket_id: int = 1) -> models.Sh
         models.ShoppingList.is_active == True,
         models.ShoppingList.supermarket_id == supermarket_id
     ).options(
-        joinedload(models.ShoppingList.items).joinedload(models.ListItem.product)
+        joinedload(models.ShoppingList.items).joinedload(models.ListItem.product),
+        joinedload(models.ShoppingList.supermarket)
     ).first()
     
     if not active_list:
@@ -67,9 +68,13 @@ def get_active_list(
         "id": active_list.id,
         "name": active_list.name,
         "is_active": active_list.is_active,
+        "created_at": active_list.created_at,
         "updated_at": active_list.updated_at,
+        "supermarket_id": active_list.supermarket_id,
+        # Optional relation
+        "supermarket": active_list.supermarket,
         "items": sorted_items,
-        "total_cents": total_cents
+        "total_cents": total_cents,
     }
 
 
