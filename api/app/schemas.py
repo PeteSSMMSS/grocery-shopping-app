@@ -6,6 +6,32 @@ from typing import Optional, List as ListType
 from datetime import datetime, date
 
 
+# ============= Supermarket Schemas =============
+
+class SupermarketBase(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    color: Optional[str] = Field(None, pattern="^#[0-9A-Fa-f]{6}$", description="Hex color code, e.g., #FF0000")
+    logo_url: Optional[str] = Field(None, max_length=500)
+
+
+class SupermarketCreate(SupermarketBase):
+    pass
+
+
+class SupermarketUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    color: Optional[str] = Field(None, pattern="^#[0-9A-Fa-f]{6}$")
+    logo_url: Optional[str] = Field(None, max_length=500)
+
+
+class Supermarket(SupermarketBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 # ============= Category Schemas =============
 
 class CategoryBase(BaseModel):
@@ -32,6 +58,7 @@ class Category(CategoryBase):
 class ProductBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
     category_id: Optional[int] = None
+    supermarket_id: int = Field(..., gt=0, description="Supermarket ID")
     price_type: str = Field(default='per_package', pattern="^(per_package|per_kg|per_100g|per_liter)$")
     package_size: Optional[float] = Field(None, gt=0, description="Package size (e.g., 500, 10, 1.5)")
     package_unit: Optional[str] = Field(None, max_length=10, description="Unit: g, kg, stück, l, ml")
@@ -44,6 +71,7 @@ class ProductCreate(ProductBase):
 class ProductUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=200)
     category_id: Optional[int] = None
+    supermarket_id: Optional[int] = Field(None, gt=0)
     price_type: Optional[str] = Field(None, pattern="^(per_package|per_kg|per_100g|per_liter)$")
     package_size: Optional[float] = Field(None, gt=0)
     package_unit: Optional[str] = Field(None, max_length=10)
