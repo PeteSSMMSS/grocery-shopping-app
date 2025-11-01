@@ -1,0 +1,17 @@
+{
+  "qdrant-mcp": {
+    "command": "docker",
+    "args": [
+      "run",
+      "--rm",
+      "-i",
+      "--network", "host",
+      "-e", "FASTMCP_HOST=127.0.0.1",
+      "-e", "QDRANT_URL=http://localhost:6333",
+      "-e", "COLLECTION_NAME=project_knowledge",
+      "-e", "TOOL_STORE_DESCRIPTION=Speichere Wissen über Projekte, Infrastructure, Code-Snippets, APIs, Docker-Konfigurationen in Qdrant. Das 'information'-Feld sollte eine natürlichsprachliche Beschreibung enthalten.",
+      "-e", "TOOL_FIND_DESCRIPTION=Durchsuche das Langzeitgedächtnis nach relevantem Wissen über Projekte, Infrastructure, APIs, Docker, Deployment, Troubleshooting. Verwende natürlichsprachliche Queries.",
+      "mcp-server-qdrant"
+    ]
+  }
+}
