@@ -1,6 +1,7 @@
 """
 Pydantic schemas for request/response validation.
 """
+
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List as ListType
 from datetime import datetime, date
@@ -8,9 +9,12 @@ from datetime import datetime, date
 
 # ============= Supermarket Schemas =============
 
+
 class SupermarketBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    color: Optional[str] = Field(None, pattern="^#[0-9A-Fa-f]{6}$", description="Hex color code, e.g., #FF0000")
+    color: Optional[str] = Field(
+        None, pattern="^#[0-9A-Fa-f]{6}$", description="Hex color code, e.g., #FF0000"
+    )
     logo_url: Optional[str] = Field(None, max_length=500)
 
 
@@ -34,6 +38,7 @@ class Supermarket(SupermarketBase):
 
 # ============= Category Schemas =============
 
+
 class CategoryBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
 
@@ -55,13 +60,20 @@ class Category(CategoryBase):
 
 # ============= Product Schemas =============
 
+
 class ProductBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=200)
     category_id: Optional[int] = None
     supermarket_id: int = Field(..., gt=0, description="Supermarket ID")
-    price_type: str = Field(default='per_package', pattern="^(per_package|per_kg|per_100g|per_liter)$")
-    package_size: Optional[float] = Field(None, gt=0, description="Package size (e.g., 500, 10, 1.5)")
-    package_unit: Optional[str] = Field(None, max_length=10, description="Unit: g, kg, stück, l, ml")
+    price_type: str = Field(
+        default="per_package", pattern="^(per_package|per_kg|per_100g|per_liter)$"
+    )
+    package_size: Optional[float] = Field(
+        None, gt=0, description="Package size (e.g., 500, 10, 1.5)"
+    )
+    package_unit: Optional[str] = Field(
+        None, max_length=10, description="Unit: g, kg, stück, l, ml"
+    )
 
 
 class ProductCreate(ProductBase):
@@ -72,15 +84,21 @@ class ProductUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=200)
     category_id: Optional[int] = None
     supermarket_id: Optional[int] = Field(None, gt=0)
-    price_type: Optional[str] = Field(None, pattern="^(per_package|per_kg|per_100g|per_liter)$")
+    price_type: Optional[str] = Field(
+        None, pattern="^(per_package|per_kg|per_100g|per_liter)$"
+    )
     package_size: Optional[float] = Field(None, gt=0)
     package_unit: Optional[str] = Field(None, max_length=10)
-    price_cents: Optional[int] = Field(None, ge=0, description="Price in cents (e.g., 299 for €2.99)")
+    price_cents: Optional[int] = Field(
+        None, ge=0, description="Price in cents (e.g., 299 for €2.99)"
+    )
     is_active: Optional[bool] = None
 
 
 class ProductPriceCreate(BaseModel):
-    price_cents: int = Field(..., ge=0, description="Price in cents (e.g., 299 for €2.99)")
+    price_cents: int = Field(
+        ..., ge=0, description="Price in cents (e.g., 299 for €2.99)"
+    )
 
 
 class ProductPrice(BaseModel):
@@ -110,6 +128,7 @@ class ProductWithPrices(Product):
 
 # ============= List Schemas =============
 
+
 class ShoppingListBase(BaseModel):
     name: str = Field(default="Einkauf", min_length=1, max_length=200)
     supermarket_id: int = Field(..., gt=0, description="Supermarket ID")
@@ -136,6 +155,7 @@ class ShoppingList(ShoppingListBase):
 
 
 # ============= ListItem Schemas =============
+
 
 class ListItemBase(BaseModel):
     product_id: int
@@ -166,11 +186,13 @@ class ListItem(BaseModel):
 
 class ActiveListResponse(ShoppingList):
     """Response for GET /api/lists/active"""
+
     items: ListType[ListItem] = []
     total_cents: int = Field(default=0, description="Total price in cents")
 
 
 # ============= Purchase Schemas =============
+
 
 class PurchaseItemBase(BaseModel):
     product_id: int
@@ -202,13 +224,16 @@ class Purchase(BaseModel):
 
 class CheckoutRequest(BaseModel):
     """Request for POST /api/purchase/checkout"""
+
     pass  # Uses current active list
 
 
 # ============= Sync Schemas =============
 
+
 class SyncChange(BaseModel):
     """A change from the client to sync"""
+
     entity_type: str = Field(..., description="E.g., 'list_item', 'product'")
     entity_id: Optional[int] = None
     operation: str = Field(..., description="'create', 'update', 'delete'")
@@ -222,6 +247,7 @@ class SyncChangesRequest(BaseModel):
 
 class SyncResponse(BaseModel):
     """Response for GET /api/sync/since"""
+
     categories: ListType[Category] = []
     products: ListType[Product] = []
     product_prices: ListType[ProductPrice] = []
@@ -231,10 +257,13 @@ class SyncResponse(BaseModel):
 
 # ============= Meal Schemas =============
 
+
 class MealIngredientBase(BaseModel):
     product_id: int
     quantity: float = Field(..., gt=0, description="Quantity (e.g., 250, 2, 1.5)")
-    quantity_unit: str = Field(default='g', max_length=10, description="Unit: g, kg, stück, l, ml")
+    quantity_unit: str = Field(
+        default="g", max_length=10, description="Unit: g, kg, stück, l, ml"
+    )
 
 
 class MealIngredientCreate(MealIngredientBase):
@@ -299,4 +328,3 @@ class ShoppingEvent(ShoppingEventCreate):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
-
