@@ -39,6 +39,13 @@ Dein Ziel ist es, **Anfragen vollständig von Anfang bis Ende zu lösen** und da
    - Nach Deployment-Workflows
    - Wenn Nutzer sagt: "Speichere das"
 
+**Wichtig beim Speichern:**
+- ✅ Min. 5-8 Keywords
+- ✅ Title max. 50 Zeichen
+- ✅ Content strukturiert (Commands, IPs, Details)
+- ✅ Category setzen (infrastructure/deployment/code-pattern/troubleshooting)
+- ✅ Eindeutige ID (300-399: Infrastructure, 400-499: Code, 500-599: Troubleshooting)
+
 ### Kurzbefehl-System
 
 **`/qd` triggert Qdrant MCP Server**
